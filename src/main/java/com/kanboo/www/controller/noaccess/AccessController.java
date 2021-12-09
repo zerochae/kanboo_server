@@ -1,10 +1,13 @@
 package com.kanboo.www.controller.noaccess;
 
+import com.kanboo.www.domain.entity.member.Member;
 import com.kanboo.www.dto.member.MemberDTO;
 import com.kanboo.www.security.JwtSecurityService;
 import com.kanboo.www.service.inter.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,40 +21,37 @@ public class AccessController {
     @PostMapping("/login")
     public String loginHandler(MemberDTO memberDTO) {
 
-        String token = "";
-
+        String jwt_token = "fail";
+        System.out.println(memberDTO);
         boolean loginHandler = memberService.loginHandler(memberDTO);
         if (loginHandler) {
-            token = jwtSecurityService.createToken(memberDTO.getMemId(), 60L);
+            jwt_token = jwtSecurityService.createToken(memberDTO.getMemId(), 60L);
         }
-        return token;
+        return jwt_token;
     }
 
     @PostMapping("/sign")
     public String signHandler(MemberDTO memberDTO) {
         System.out.println(memberDTO);
-        MemberDTO signHandler = memberService.signHandler(memberDTO);
-        return signHandler.getMemToken();
+        MemberDTO member = memberService.signHandler(memberDTO);
+        return member.getMemToken();
     }
 
-    @GetMapping("/idCheck")
+    @PostMapping("/idCheck")
     public boolean idDuplicateCheck(String memId) {
         return memberService.isExistId(memId) > 0;
     }
 
     @PostMapping("/findId")
-    public String findIdHandler(String token) {
-
-        //아이디 찾기는 아이디만
-        // 패스워드찾기는 resetmethod작성해서 문자 발송하고 비번 변경시킨다음
-        // 개인정보는 묶어서 post
-
-        return memberService.findIdHandler(token).getMemId();
+    public String findIdHandler(MemberDTO memberDTO) {
+        return memberService.findIdHandler(memberDTO).getMemId();
     }
 
     @PostMapping("/resetPw")
-    public boolean resetPwHandler(String token, String memId){
-        return memberService.resetPwHandler(token,memId) != null;
+    public boolean resetPwHandler(MemberDTO memberDTO){
+        String resetPass = memberService.resetPwHandler(memberDTO);
+
+        return false;
     }
 }
 

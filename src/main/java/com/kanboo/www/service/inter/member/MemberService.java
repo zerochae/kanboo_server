@@ -1,5 +1,6 @@
 package com.kanboo.www.service.inter.member;
 
+import com.kanboo.www.domain.entity.member.Member;
 import com.kanboo.www.dto.member.MemberDTO;
 
 public interface MemberService {
@@ -14,7 +15,8 @@ public interface MemberService {
 
     int isExistId(String memId);
 
-    MemberDTO findIdHandler(String token);
+    MemberDTO findIdHandler(MemberDTO memberDTO);
 
-    MemberDTO resetPwHandler(String token,String memId);
+    String resetPwHandler(MemberDTO memberDTO);
+
 }

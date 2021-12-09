@@ -11,14 +11,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Member findByMemIdAndMemPass(String memId, String memPw);
 
-    int countByMemTag(String kTag);
+    int countByMemTag(String memTag);
 
-    int countByMemToken(String token);
+    int countByMemToken(String memToken);
 
     int countByMemId(String memId);
 
-    Member findByMemToken(String token);
-
-    Member findByMemTokenAndMemId(String token,String memId);
-
+    Member findByMemToken(String memToken);
 }

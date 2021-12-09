@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -21,8 +22,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean loginHandler(MemberDTO memberDTO) {
-        return memberRepository
-                .findByMemIdAndMemPass(memberDTO.getMemId(), memberDTO.getMemPass()) != null;
+
+        Member member = memberRepository
+                .findByMemIdAndMemPass(memberDTO.getMemId(), memberDTO.getMemPass());
+
+        return member != null;
     }
 
     @Override
@@ -64,16 +68,21 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberDTO findIdHandler(String token) {
-        return memberRepository.findByMemToken(token).entityToDto();
+    public MemberDTO findIdHandler(MemberDTO memberDTO) {
+        return memberRepository.findByMemToken(memberDTO.getMemToken()).entityToDto();
     }
 
     @Override
-    public MemberDTO resetPwHandler(String token, String memId) {
+    @Transactional
+    public String resetPwHandler(MemberDTO memberDTO) {
+        Member member = memberRepository.findByMemToken(memberDTO.getMemToken());
+        String newPw = null;
 
-        MemberDTO member = memberRepository.findByMemTokenAndMemId(token,memId).entityToDto();
-        member.setMemPass(CreateTempPw.create());
-        System.out.println(member.getMemPass());
-        return memberRepository.findByMemTokenAndMemId(token, memId).entityToDto();
+        if (member != null) {
+            newPw = CreateTempPw.create();
+            member.changeMemPass(newPw);
+        }
+
+        return newPw;
     }
 }

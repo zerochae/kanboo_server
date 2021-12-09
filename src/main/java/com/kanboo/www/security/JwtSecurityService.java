@@ -13,14 +13,14 @@ import java.util.Date;
 
 @Service
 public class JwtSecurityService {
-    private static final String SECRET_KEY = "";
+    private static final String SECRET_KEY = "lkasdfgjodiafvlbkasdrkvnoasidnrlkgnalksdfngoiadnsfognsldkfngsdroignsldkfngdsfngodr";
 
     public String createToken(String member, Long expTime) {
         if(expTime <= 0) {
             throw new RuntimeException("Expired Time must exceed zero");
         }
 
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.ES256;
+        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         byte[] secretKeyBytes = DatatypeConverter.parseBase64Binary(SECRET_KEY);
         Key signingKey = new SecretKeySpec(secretKeyBytes, signatureAlgorithm.getJcaName());
 

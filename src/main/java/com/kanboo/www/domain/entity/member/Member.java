@@ -45,4 +45,9 @@ public class Member {
                 .role(role.entityToDto())
                 .build();
     }
+
+
+    public void changeMemPass(String memPass) {
+        this.memPass = memPass;
+    }
 }
